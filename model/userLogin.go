@@ -2,6 +2,8 @@ package model
 
 import "errors"
 
+//lzy
+
 // jojoleee 用户登录表
 type UserLogin struct {
 	Id         int64 `gorm:"primary_key"`

@@ -7,7 +7,7 @@ import (
 )
 
 type UserClaims struct {
-	userId int64
+	UserId int64
 	jwt.StandardClaims
 }
 
@@ -18,7 +18,7 @@ func GenerateToken(userId int64) (string, error) {
 	expireTime := nowTime.Add(1 * 24 * time.Hour)
 	issuer := "douyin_backend"
 	claim := &UserClaims{
-		userId: userId,
+		UserId: userId,
 		StandardClaims: jwt.StandardClaims{
 			Issuer:    issuer,
 			ExpiresAt: expireTime.Unix(),

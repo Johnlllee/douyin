@@ -1,6 +1,9 @@
 package handler
 
-import "douyin/model"
+import (
+	"douyin/model"
+	"douyin/service/videoSvc"
+)
 
 //定义一下所有的respone
 
@@ -27,4 +30,18 @@ type UserLoginResponse struct {
 type UserInfoQueryResponse struct {
 	CommonResponse
 	User *model.UserInfo `json:"user"`
+}
+
+type FeedResponse struct {
+	CommonResponse
+	*videoSvc.FeedVideoList
+}
+
+type PostVideoResponse struct {
+	CommonResponse
+}
+
+type PublishedVideoResponse struct {
+	CommonResponse
+	*videoSvc.PublishedVideoList
 }

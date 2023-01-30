@@ -50,3 +50,14 @@ func JWTMiddleware() gin.HandlerFunc {
 	}
 
 }
+
+func SHA1Middleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		password := c.Query("password")
+		if password == "" {
+			password = c.PostForm("password")
+		}
+		c.Set("password", SHA1(password))
+		c.Next()
+	}
+}

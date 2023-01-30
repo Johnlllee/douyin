@@ -56,3 +56,10 @@ func QueryUserInfoByName(username string, userinfo *UserInfo) error {
 	}
 	return nil
 }
+
+func QueryLastUserId(id *int64) error {
+	var userinfo UserInfo
+	DB.Last(&userinfo)
+	*id = userinfo.Id
+	return nil
+}

@@ -2,7 +2,6 @@ package router
 
 import (
 	"douyin/handler/user"
-	"douyin/handler/video"
 	"douyin/middleware"
 	"github.com/gin-gonic/gin"
 )

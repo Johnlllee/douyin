@@ -60,17 +60,17 @@ func (qf *QueryFeedVideoFlow) prepareFeedInfo(isLogin bool) error {
 	if !isLogin { //未登录
 		qf.nextTime = time.Now().Unix() / 1e6
 	} else { // 已登陆
-		// TODO qf.nextTime = 最新视频的时间；根据用户id更新视频点赞状态(中间件？)
+		// TODO qf.nextTime = 最新视频的时间；根据用户id更新视频点赞状态
 		/*size := len(qf.videos)
 		nextTime := qf.videos[size-1].CreatedAt //有必要是这样的逻辑吗？
 		qf.nextTime = nextTime.UnixNano() / 1e6
-	*/
-	qf.nextTime = time.Now().Unix() / 1e6
+		*/
+		qf.nextTime = time.Now().Unix() / 1e6
 	}
 	return nil
 }
 
 func (qf *QueryFeedVideoFlow) packageFeedInfo(isLogin bool) error {
-	//TODO qf.feedVideoList = &FeedVideoList{qf.videos, qf.nextTime}
+	qf.feedVideoList = &FeedVideoList{qf.videos, qf.nextTime}
 	return nil
 }

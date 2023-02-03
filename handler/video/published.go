@@ -5,11 +5,12 @@ import (
 	"douyin/service/videoSvc"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"strconv"
 )
 
 func PublishedVideoListHandler(c *gin.Context) {
-	userId, ok := c.GetQuery("user_id")
+	//userId, ok := c.GetQuery("user_id")
+	userId, ok := c.Get("userid")
+
 	if !ok {
 		c.JSON(http.StatusOK, handler.PublishedVideoResponse{
 			handler.CommonResponse{
@@ -20,8 +21,20 @@ func PublishedVideoListHandler(c *gin.Context) {
 		})
 		return
 	}
-	userIdInt, err := strconv.ParseInt(userId, 10, 64)
-	if err != nil {
+
+	userIdInt, ok := userId.(int64)
+	if !ok {
+		c.JSON(http.StatusOK, handler.PublishedVideoResponse{
+			handler.CommonResponse{
+				1,
+				"PublishedVideoListHandler Fails To Parse Id",
+			},
+			nil,
+		})
+		return
+	}
+	//userIdInt, err := strconv.ParseInt(userId, 10, 64)
+	/*if err != nil {
 		c.JSON(http.StatusOK, handler.PublishedVideoResponse{
 			handler.CommonResponse{
 				1,
@@ -30,7 +43,7 @@ func PublishedVideoListHandler(c *gin.Context) {
 			nil,
 		})
 		return
-	}
+	}*/
 
 	videoList, err := videoSvc.QueryPublishedVideoList(userIdInt)
 	if err != nil {

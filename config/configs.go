@@ -22,14 +22,22 @@ type Mysql struct {
 	ParseTime bool `toml:"parse_time"`
 	Loc       string
 }
+
+type Server struct {
+	IP   string
+	Port int
+}
+
 type Config struct {
-	DB Mysql `toml:"mysql"`
+	DB               Mysql `toml:"mysql"`
+	Server           `toml:"server"`
+	StaticSourcePath string `toml:"static_source_path"`
 }
 
 var Info Config
 
 func init() {
-	if _, err := toml.DecodeFile("/Users/johnlllee/Documents/GO/byte_douyin_project/config/config.toml", &Info); err != nil {
+	if _, err := toml.DecodeFile("/Users/lianghaoran/golangWorkSpace/src/douyin/config/config.toml", &Info); err != nil {
 		panic(err)
 	}
 	//去除左右的空格

@@ -1,8 +1,10 @@
 package videoSvc
 
 import (
+	"douyin/config"
 	"douyin/model"
 	"errors"
+	"fmt"
 )
 
 type PostVideoFlow struct {
@@ -60,13 +62,11 @@ func (pf *PostVideoFlow) postVideo() error {
 	return nil
 }
 
-//TODO 完善config.Info
-
 func GetFileUrl(fileName string) string {
-	if fileName == "" { //TODO coverPath 尚未解决
+	if fileName == "" {
 		fileName = "Debug"
 	}
-	//base := fmt.Sprintf("http://%s:%d/static/%s", config.Info.IP, config.Info.Port, fileName)
-	base := ""
+	base := fmt.Sprintf("http://%s:%d/static/%s", config.Info.IP, config.Info.Port, fileName)
+	//base := ""
 	return base
 }

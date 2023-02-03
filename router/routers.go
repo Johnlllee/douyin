@@ -15,6 +15,8 @@ type rsp struct {
 
 func InitAllRouters(ge *gin.Engine) {
 
+	ge.Static("static", "./static")
+
 	baseGroup := ge.Group("/douyin")
 
 	//ping接口只为了测试
@@ -37,8 +39,8 @@ func InitAllRouters(ge *gin.Engine) {
 	//video
 	baseGroup.GET("/feed/", video.FeedVideoHandler)
 
-	baseGroup.POST("/publish/action/", video.PostVideoHandler)
+	baseGroup.POST("/publish/action/", middleware.JWTMiddleware(), video.PostVideoHandler)
 
-	baseGroup.GET("/publish/list/", video.PublishedVideoListHandler)
+	baseGroup.GET("/publish/list/", middleware.JWTMiddleware(), video.PublishedVideoListHandler)
 
 }

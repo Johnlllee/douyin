@@ -42,12 +42,18 @@ func (pf *PublishedVideoFlow) checkParam() error {
 	if pf.userId <= 0 {
 		return errors.New("Published Videos UserId <= 0")
 	}
+	//TODO 判断userId是否在数据库中存在
+	userInfo := new(model.UserInfo)
+	err := model.QueryUserInfoByUserId(pf.userId, userInfo)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
 func (pf *PublishedVideoFlow) preparePublishedInfo() error {
 
-	err := model.QueryVideoListByUserId(pf.userId, &pf.videos)
+	err := model.QueryVideoListByUserId(pf.userId, &pf.videos) //TODO 判断videoList是否存在
 	if err != nil {
 		return err
 	}

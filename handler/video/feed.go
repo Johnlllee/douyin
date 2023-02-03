@@ -5,7 +5,6 @@ import (
 	"douyin/middleware"
 	"douyin/service/videoSvc"
 	"errors"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -22,11 +21,11 @@ func FeedVideoHandler(c *gin.Context) {
 	}
 	videoList, err := GetFeedVideoList(c, isLogin)
 	if err != nil {
-		fmt.Println("FeedVideoHandle GetFeedVideoList Error: ", err.Error())
+		//fmt.Println("FeedVideoHandle GetFeedVideoList Error: ", err.Error())
 		response := handler.FeedResponse{
 			handler.CommonResponse{
 				StatusCode: 1,
-				StatusMsg:  err.Error(),
+				StatusMsg:  "FeedVideoHandle GetFeedVideoList Error: " + err.Error(),
 			},
 			nil,
 		}
@@ -36,6 +35,7 @@ func FeedVideoHandler(c *gin.Context) {
 	response := handler.FeedResponse{
 		handler.CommonResponse{
 			StatusCode: 0,
+			StatusMsg:  "Successfully Get Feed Videolist",
 		},
 		videoList,
 	}
@@ -55,9 +55,9 @@ func GetFeedVideoList(c *gin.Context, isLogin bool) (*videoSvc.FeedVideoList, er
 	var latestTime time.Time
 	latestTimeInt, err := strconv.ParseInt(latestTimeRaw, 10, 64)
 	if err != nil {
-		return nil, err
+		//return nil, err
+		latestTime = time.Unix(0, latestTimeInt*1e6) //前端传来的时间戳以ms为单位
 	}
-	latestTime = time.Unix(0, latestTimeInt*1e6) //前端传来的时间戳以ms为单位
 
 	var videoList *videoSvc.FeedVideoList
 	if isLogin == false { //未登陆状态
@@ -65,20 +65,23 @@ func GetFeedVideoList(c *gin.Context, isLogin bool) (*videoSvc.FeedVideoList, er
 		if err != nil {
 			return nil, errors.New("failed to QueryFeedVideoList (isLogin false)")
 		}
-	} else {
-		token := c.Query("token")
-		claim, ok := middleware.ParseToken(token)
-		if !ok {
-			return nil, errors.New("Feed Video Handler Parse Token Error")
-		}
+		return videoList, nil
+	}
 
-		if claim.ExpiresAt < time.Now().Unix() {
-			return nil, errors.New("Token Expired")
-		}
-		//claim.
+	token := c.Query("token")
+	claim, ok := middleware.ParseToken(token)
+	if !ok {
+		return nil, errors.New("Feed Video Handler Parse Token Error")
+	}
 
-		videoList, err = videoSvc.QueryFeedVideoList(claim.UserId, latestTime)
+	if claim.ExpiresAt < time.Now().Unix() {
+		return nil, errors.New("Token Expired")
+	}
 
+	videoList, err = videoSvc.QueryFeedVideoList(claim.UserId, latestTime)
+	//videoList, err = videoSvc.QueryFeedVideoList(1, latestTime)
+	if err != nil {
+		return nil, errors.New("failed to QueryFeedVideoList (isLogin true)")
 	}
 
 	return videoList, nil

@@ -32,7 +32,7 @@ func InitAllRouters(ge *gin.Engine) {
 	//中间件还没上
 	baseGroup.POST("/user/login/", user.UserLoginHandler)
 	//已经加上jwt中间件
-	baseGroup.GET("/user/info/", middleware.JWTMiddleware(), user.UserInfoHandler)
+	baseGroup.GET("/user/", middleware.JWTMiddleware(), user.UserInfoHandler)
 
 	//video
 	baseGroup.GET("/feed/", video.FeedVideoHandler)

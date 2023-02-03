@@ -4,7 +4,6 @@ import (
 	"douyin/config"
 	"douyin/handler"
 	"douyin/middleware"
-	"douyin/service"
 	"douyin/service/userSvc"
 	"errors"
 	"github.com/gin-gonic/gin"
@@ -49,9 +48,9 @@ func Register(userName string, password string) (*handler.UserInfoResponse, erro
 		return nil, err
 	}
 
-	userid := service.UserServiceManager.RequestUserId()
+	//userid := service.UserServiceManager.RequestUserId()
 
-	err = userSvc.InsertUserData(userName, password, userid)
+	userid, err := userSvc.InsertUserData(userName, password)
 	if err != nil {
 		return nil, err
 	}

@@ -4,9 +4,14 @@ import "douyin/model"
 
 func QueryUserInfo(userid int64) (*model.UserInfo, error) {
 
-	return &model.UserInfo{
-		Id:       userid,
-		Name:     "forTest",
-		IsFollow: true,
-	}, nil
+	userinfo := &model.UserInfo{}
+
+	err := model.QueryUserInfoByUserId(userid, userinfo)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return userinfo, nil
+
 }

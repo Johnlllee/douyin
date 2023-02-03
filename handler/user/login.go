@@ -20,6 +20,7 @@ func UserLoginHandler(context *gin.Context) {
 			StatusCode: 1,
 			StatusMsg:  err.Error(),
 		})
+		return
 	}
 
 	context.JSON(http.StatusOK, &handler.UserLoginResponse{

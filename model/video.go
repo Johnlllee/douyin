@@ -33,6 +33,18 @@ func QueryVideoByVideoId(id int64, video *Video) error {
 		First(video).Error
 }
 
+func IsVideoExistByVideoId(id int64) (bool, error) {
+	var video Video
+	err := QueryVideoByVideoId(id, &video)
+	if err != nil {
+		return false, err
+	}
+	if video.Id == 0 {
+		return false, nil
+	}
+	return true, nil
+}
+
 func QueryVideoCountByUserId(userId int64, count *int64) error {
 	if count == nil {
 		return ErrIvdPtr

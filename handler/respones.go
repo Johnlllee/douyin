@@ -2,6 +2,7 @@ package handler
 
 import (
 	"douyin/model"
+	"douyin/service/commentSvc"
 	"douyin/service/videoSvc"
 )
 
@@ -44,4 +45,14 @@ type PostVideoResponse struct {
 type PublishedVideoResponse struct {
 	CommonResponse
 	*videoSvc.PublishedVideoList
+}
+
+type PostCommentResponse struct {
+	CommonResponse
+	*commentSvc.Response
+}
+
+type GetCommentResponse struct {
+	CommonResponse
+	*commentSvc.FeedCommentList
 }

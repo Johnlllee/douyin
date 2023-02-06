@@ -40,6 +40,18 @@ func QueryUserInfoByUserId(id int64, userinfo *UserInfo) error {
 	return nil
 }
 
+func IsUserExistByUserId(id int64) (bool, error) {
+	var user UserInfo
+	err := DB.Where("id=?", id).First(&user).Error
+	if err != nil {
+		return false, err
+	}
+	if user.Id == 0 {
+		return false, nil
+	}
+	return true, nil
+}
+
 func QueryUserInfoByName(username string, userinfo *UserInfo) error {
 	/**
 	 * @Author jojoleee

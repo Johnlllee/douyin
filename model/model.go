@@ -10,9 +10,10 @@ import (
 var DB *gorm.DB
 
 var (
-	ErrIvdPtr        = errors.New("[DB]空指针错误")
-	ErrEmptyUserList = errors.New("[DB]用户列表为空")
-	ErrUserNotExist  = errors.New("[DB]用户不存在")
+	ErrIvdPtr          = errors.New("[DB]空指针错误")
+	ErrEmptyUserList   = errors.New("[DB]用户列表为空")
+	ErrUserNotExist    = errors.New("[DB]用户不存在")
+	ErrCommentNotExist = errors.New("[DB]评论不存在")
 )
 
 func InitDB() {
@@ -25,7 +26,7 @@ func InitDB() {
 	if err != nil {
 		panic(err)
 	}
-	err = DB.AutoMigrate(&UserInfo{}, UserLogin{}, &Video{})
+	err = DB.AutoMigrate(&UserInfo{}, UserLogin{}, &Video{}, &Comment{})
 	if err != nil {
 		panic(err)
 	}

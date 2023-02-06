@@ -15,3 +15,11 @@ func QueryUserInfo(userid int64) (*model.UserInfo, error) {
 	return userinfo, nil
 
 }
+
+func IsUserExistByUserId(userid int64) (bool, error) {
+	exist, err := model.IsUserExistByUserId(userid)
+	if err != nil {
+		return false, err
+	}
+	return exist, nil
+}

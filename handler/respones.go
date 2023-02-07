@@ -56,3 +56,7 @@ type GetCommentResponse struct {
 	CommonResponse
 	*commentSvc.FeedCommentList
 }
+
+type AddFavoriteResponse struct {
+	CommonResponse
+}

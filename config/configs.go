@@ -28,10 +28,17 @@ type Server struct {
 	Port int
 }
 
+type Redis struct {
+	IP       string
+	Port     int
+	Database int
+}
+
 type Config struct {
 	DB               Mysql `toml:"mysql"`
 	Server           `toml:"server"`
 	StaticSourcePath string `toml:"static_source_path"`
+	RDB              Redis  `toml:"redis"`
 }
 
 var Info Config

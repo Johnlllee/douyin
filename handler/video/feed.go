@@ -5,6 +5,7 @@ import (
 	"douyin/middleware"
 	"douyin/service/videoSvc"
 	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -21,25 +22,12 @@ func FeedVideoHandler(c *gin.Context) {
 	}
 	videoList, err := GetFeedVideoList(c, isLogin)
 	if err != nil {
-		//fmt.Println("FeedVideoHandle GetFeedVideoList Error: ", err.Error())
-		response := handler.FeedResponse{
-			handler.CommonResponse{
-				StatusCode: 1,
-				StatusMsg:  "FeedVideoHandle GetFeedVideoList Error: " + err.Error(),
-			},
-			nil,
-		}
-		c.JSON(http.StatusOK, response)
+		StatusMsg := "FeedVideoHandle GetFeedVideoList Error: " + err.Error()
+		SendFeedResponse(c, 1, StatusMsg, nil)
 		return
 	}
-	response := handler.FeedResponse{
-		handler.CommonResponse{
-			StatusCode: 0,
-			StatusMsg:  "Successfully Get Feed Videolist",
-		},
-		videoList,
-	}
-	c.JSON(http.StatusOK, response)
+
+	SendFeedResponse(c, 0, "Successfully Get Feed Videolist", videoList)
 	return
 
 }
@@ -49,9 +37,8 @@ func GetFeedVideoList(c *gin.Context, isLogin bool) (*videoSvc.FeedVideoList, er
 		return nil, errors.New("Context is nil")
 	}
 
-	//var videoList *video.FeedVideoList
-
 	latestTimeRaw := c.Query("latest_time")
+	//fmt.Println("LTR: ", latestTimeRaw)
 	var latestTime time.Time
 	latestTimeInt, err := strconv.ParseInt(latestTimeRaw, 10, 64)
 	if err != nil {
@@ -86,4 +73,19 @@ func GetFeedVideoList(c *gin.Context, isLogin bool) (*videoSvc.FeedVideoList, er
 
 	return videoList, nil
 
+}
+
+func SendFeedResponse(c *gin.Context, statusCode int32, statusMessage string, videoList *videoSvc.FeedVideoList) {
+	if c == nil {
+		fmt.Println("SendFeedResponse Fail: Context == nil")
+		return
+	}
+	c.JSON(http.StatusOK, handler.FeedResponse{
+		CommonResponse: handler.CommonResponse{
+			StatusCode: statusCode,
+			StatusMsg:  statusMessage,
+		},
+		FeedVideoList: videoList,
+	})
+	return
 }

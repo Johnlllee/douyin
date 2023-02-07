@@ -52,7 +52,9 @@ func (qf *QueryFeedVideoFlow) checkParam() bool {
 }
 
 func (qf *QueryFeedVideoFlow) prepareFeedInfo(isLogin bool) error {
+	//fmt.Println("qf.latestTime = ", qf.latestTime)
 	err := model.QueryVideoListByLimitAndTime(30, qf.latestTime, &qf.videos)
+
 	if err != nil {
 		return err
 	}
@@ -61,11 +63,17 @@ func (qf *QueryFeedVideoFlow) prepareFeedInfo(isLogin bool) error {
 		qf.nextTime = time.Now().Unix() / 1e6
 	} else { // 已登陆
 		// TODO qf.nextTime = 最新视频的时间；根据用户id更新视频点赞状态
-		/*size := len(qf.videos)
-		nextTime := qf.videos[size-1].CreatedAt //有必要是这样的逻辑吗？
+		size := len(qf.videos)
+		nextTime := qf.videos[size-1].CreatedAt
 		qf.nextTime = nextTime.UnixNano() / 1e6
-		*/
-		qf.nextTime = time.Now().Unix() / 1e6
+		//fmt.Println("qf.nextTime = ", qf.nextTime)
+
+		//qf.nextTime = time.Now().Unix() / 1e6
+	}
+	//反转qf.video,刷新时播放最新的视频
+	for i := 0; i < len(qf.videos)/2; i++ {
+		j := len(qf.videos) - i - 1
+		qf.videos[i], qf.videos[j] = qf.videos[j], qf.videos[i]
 	}
 	return nil
 }

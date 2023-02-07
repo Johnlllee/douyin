@@ -32,50 +32,29 @@ func PostVideoHandler(c *gin.Context) {
 
 	title := c.PostForm("title")
 	if title == "" {
-		c.JSON(http.StatusOK, handler.PostVideoResponse{
-			handler.CommonResponse{
-				1,
-				"Invalid Title",
-			},
-		})
+		StatusMessage := "Invalid Title"
+		SendPostResponse(c, 1, StatusMessage)
 		return
 	}
 
 	file, err := c.FormFile("data")
 	if err != nil {
-		c.JSON(http.StatusOK, handler.PostVideoResponse{
-			handler.CommonResponse{
-				1,
-				err.Error(),
-			},
-		})
+		SendPostResponse(c, 1, err.Error())
 		return
 	}
 
 	suffix := filepath.Ext(file.Filename)
 	if _, ok := videoType[suffix]; !ok {
-		c.JSON(http.StatusOK, handler.PostVideoResponse{
-			handler.CommonResponse{
-				1,
-				"Unsupposed Video Type: " + "(" + suffix + ")",
-			},
-		})
+		StatusMessage := "Unsupposed Video Type: " + "(" + suffix + ")"
+		SendPostResponse(c, 1, StatusMessage)
 		return
 	}
 
-	postTime := int(time.Now().Unix())
-	videoPath := strconv.Itoa(int(userIdInt)) + "_" + strconv.Itoa(postTime) + suffix
-	coverPath := strconv.Itoa(int(userIdInt)) + "_" + strconv.Itoa(postTime) + ".jpg"
-
+	videoPath, coverPath := GenerateStaticPath(userIdInt, suffix)
 	if exist := PathExists("./static"); !exist {
 		err = os.Mkdir("./static", os.ModePerm)
 		if err != nil {
-			c.JSON(http.StatusOK, handler.PostVideoResponse{
-				handler.CommonResponse{
-					1,
-					err.Error(),
-				},
-			})
+			SendPostResponse(c, 1, err.Error())
 			return
 		}
 	}
@@ -85,60 +64,27 @@ func PostVideoHandler(c *gin.Context) {
 
 	err = c.SaveUploadedFile(file, saveVideoPath)
 	if err != nil {
-		c.JSON(http.StatusOK, handler.PostVideoResponse{
-			handler.CommonResponse{
-				1,
-				err.Error(),
-			},
-		})
+		SendPostResponse(c, 1, err.Error())
 		return
 	}
 
 	err = SaveImageFromVideo(saveVideoPath, saveCoverPath)
 	if err != nil {
-		c.JSON(http.StatusOK, handler.PostVideoResponse{
-			handler.CommonResponse{
-				1,
-				err.Error(),
-			},
-		})
+		SendPostResponse(c, 1, err.Error())
 		return
 	}
 
 	err = videoSvc.PostVideo(userIdInt, title, videoPath, coverPath)
 	if err != nil {
-		c.JSON(http.StatusOK, handler.PostVideoResponse{
-			handler.CommonResponse{
-				1,
-				err.Error(),
-			},
-		})
+		SendPostResponse(c, 1, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, handler.PostVideoResponse{
-		handler.CommonResponse{
-			0,
-			"Successfully Upload File " + file.Filename,
-		},
-	})
+	StausMessage := "Successfully Upload File " + file.Filename
+	SendPostResponse(c, 0, StausMessage)
 	return
 }
 
-/*func SaveImageFromVideo(name string, isDebug bool) error {
-	v2i := NewVideo2Image()
-	if isDebug {
-		v2i.Debug()
-	}
-	v2i.InputPath = filepath.Join(config.Info.StaticSourcePath, name+defaultVideoSuffix)
-	v2i.OutputPath = filepath.Join(config.Info.StaticSourcePath, name+defaultImageSuffix)
-	v2i.FrameCount = 1
-	queryString, err := v2i.GetQueryString()
-	if err != nil {
-		return err
-	}
-	return v2i.ExecCommand(queryString)
-}*/
 // TODO 工具放在util里
 func PathExists(path string) bool {
 	_, err := os.Stat(path)
@@ -170,4 +116,25 @@ func SaveImageFromVideo(inputPath string, outputPath string) error {
 	}
 
 	return nil
+}
+
+func SendPostResponse(c *gin.Context, statusCode int32, statusMessage string) {
+	if c == nil {
+		fmt.Println("SendPostResponse Fail: Context is nil")
+		return
+	}
+	c.JSON(http.StatusOK, handler.PostVideoResponse{
+		handler.CommonResponse{
+			StatusCode: statusCode,
+			StatusMsg:  statusMessage,
+		},
+	})
+	return
+}
+
+func GenerateStaticPath(userId int64, videoTypeSuffix string) (string, string) {
+	postTime := int(time.Now().Unix())
+	videoPath := strconv.Itoa(int(userId)) + "_" + strconv.Itoa(postTime) + videoTypeSuffix
+	coverPath := strconv.Itoa(int(userId)) + "_" + strconv.Itoa(postTime) + ".jpg"
+	return videoPath, coverPath
 }

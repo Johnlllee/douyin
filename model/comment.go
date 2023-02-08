@@ -44,6 +44,7 @@ func QueryCommentListByVideoId(videoId int64, comments *[]*Comment) error {
 		return ErrIvdPtr
 	}
 	return DB.Model(&Comment{}).Where("video_id=?", videoId).
+		//[lzy]column user并不存在，而是其他表的信息
 		//Select([]string{"id", "user", "content", "created_at"}).
 		Find(comments).Error
 }

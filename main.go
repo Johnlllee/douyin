@@ -1,6 +1,7 @@
 package main
 
 import (
+	"douyin/cache"
 	"douyin/model"
 	"douyin/router"
 	"douyin/service"
@@ -12,6 +13,8 @@ func main() {
 
 	//初始化db
 	model.InitDB()
+
+	cache.InitCache()
 
 	service.InitAllServiceMgr()
 

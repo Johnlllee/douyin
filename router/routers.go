@@ -1,6 +1,7 @@
 package router
 
 import (
+	"douyin/handler/action"
 	"douyin/handler/comment"
 	"douyin/handler/user"
 	"douyin/handler/video"
@@ -48,5 +49,14 @@ func InitAllRouters(ge *gin.Engine) {
 	baseGroup.POST("/comment/action/", middleware.JWTMiddleware(), comment.PostCommentHandler)
 
 	baseGroup.GET("/comment/list/", middleware.JWTMiddleware(), comment.GetCommentHandler)
+
+	//action
+	baseGroup.POST("/relation/action/", middleware.JWTMiddleware(), action.ActionHandler)
+
+	//followlist
+	baseGroup.GET("/relation/follow/list/", middleware.JWTMiddleware(), action.FollowListHandler)
+
+	//followerlist
+	baseGroup.GET("/relation/follower/list/", middleware.JWTMiddleware(), action.FollowerListHandler)
 
 }

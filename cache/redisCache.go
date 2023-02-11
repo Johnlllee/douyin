@@ -13,6 +13,10 @@ import (
 var rdb *redis.Client
 var c = context.Background()
 
+func InitCache() {
+	initRDB()
+}
+
 func initRDB() {
 	rdb = redis.NewClient(&redis.Options{
 		Addr:     fmt.Sprintf("%s:%d", config.Info.RDB.IP, config.Info.RDB.Port),

@@ -105,7 +105,7 @@ func GetFollowListByUserId(userId int64, userList *[]*UserInfo) error {
 	if userList == nil {
 		return ErrIvdPtr
 	}
-	if err := DB.Raw("SELECT u.* FROM user_relations r, user_infos u WHERE r.user_info_id=? AND r.follor_id=u.id", userId).Scan(userList).Error; err != nil {
+	if err := DB.Raw("SELECT u.* FROM user_relations r, user_infos u WHERE r.user_info_id=? AND r.follow_id=u.id", userId).Scan(userList).Error; err != nil {
 		return err
 	}
 	if len(*userList) == 0 || (*userList)[0].Id == 0 {

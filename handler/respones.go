@@ -2,6 +2,7 @@ package handler
 
 import (
 	"douyin/model"
+	"douyin/service/ActionSvc"
 	"douyin/service/commentSvc"
 	"douyin/service/videoSvc"
 )
@@ -59,4 +60,14 @@ type GetCommentResponse struct {
 
 type AddFavoriteResponse struct {
 	CommonResponse
+}
+
+type FollowListResponse struct {
+	CommonResponse
+	*ActionSvc.UserInfoList
+}
+
+type FollowerListResponse struct {
+	CommonResponse
+	*ActionSvc.UserInfoList
 }

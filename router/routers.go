@@ -59,4 +59,8 @@ func InitAllRouters(ge *gin.Engine) {
 	//followerlist
 	baseGroup.GET("/relation/follower/list/", middleware.JWTMiddleware(), action.FollowerListHandler)
 
+	//favorite
+	baseGroup.POST("favorite/action/", middleware.JWTMiddleware(), video.AddFavoriteHandler)
+
+	baseGroup.GET("/favorite/list/", middleware.JWTMiddleware(), video.FavoriteListHandler)
 }

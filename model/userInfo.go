@@ -4,12 +4,13 @@ import "gorm.io/gorm"
 
 // jojoleee 用户信息表
 type UserInfo struct {
-	Id            int64      `json:"id"`
-	Name          string     `json:"name"`
-	FollowCount   int64      `json:"follow_count"`
-	FollowerCount int64      `json:"follower_count"`
-	IsFollow      bool       `json:"is_follow"`
-	User          *UserLogin `json:"-"`
+	Id            int64       `json:"id"`
+	Name          string      `json:"name"`
+	FollowCount   int64       `json:"follow_count"`
+	FollowerCount int64       `json:"follower_count"`
+	IsFollow      bool        `json:"is_follow"`
+	User          *UserLogin  `json:"-"`
+	Follows       []*UserInfo `json:"-" gorm:"many2many:user_relations;"`
 }
 
 func AddUserInfo(userinfo *UserInfo) error {

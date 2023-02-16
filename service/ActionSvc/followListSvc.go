@@ -6,7 +6,7 @@ import (
 )
 
 type UserInfoList struct {
-	List []*model.UserInfo
+	List []*model.UserInfo `json:"user_list"`
 }
 
 func GetFollowList(useridToQuery int64) (*UserInfoList, error) {

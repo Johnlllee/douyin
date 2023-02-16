@@ -44,7 +44,7 @@ func FollowListHandler(context *gin.Context) {
 		CommonResponse: handler.CommonResponse{
 			StatusCode: 0,
 		},
-		UserInfoList: list,
+		User_list: list,
 	})
 	return
 }

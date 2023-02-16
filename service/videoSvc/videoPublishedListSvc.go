@@ -43,10 +43,14 @@ func (pf *PublishedVideoFlow) checkParam() error {
 		return errors.New("Published Videos UserId <= 0")
 	}
 	//TODO 判断userId是否在数据库中存在
-	userInfo := new(model.UserInfo)
-	err := model.QueryUserInfoByUserId(pf.userId, userInfo)
+	//userInfo := new(model.UserInfo)
+	//err := model.QueryUserInfoByUserId(pf.userId, userInfo)
+	exist, err := model.IsUserExistByUserId(pf.userId)
 	if err != nil {
 		return err
+	}
+	if !exist {
+		return errors.New("publishedListSvc error: user not exist")
 	}
 	return nil
 }
@@ -57,6 +61,9 @@ func (pf *PublishedVideoFlow) preparePublishedInfo() error {
 	if err != nil {
 		return err
 	}
+
+	err = SetVideoListInfo(pf.userId, &pf.videos, true)
+
 	pf.videoList = &PublishedVideoList{pf.videos}
 
 	return nil

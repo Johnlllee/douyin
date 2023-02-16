@@ -28,6 +28,10 @@ func initRDB() {
 type RedisProxy struct {
 }
 
+func OnSeverClose() {
+	rdb.ShutdownSave(c)
+}
+
 func NewRedisProxy() *RedisProxy {
 	return &RedisProxy{}
 }
@@ -66,9 +70,33 @@ func (p *RedisProxy) GetFavoriteStatus(userId int64, videoId int64) (bool, error
 	var setName bytes.Buffer
 	setName.WriteString(userIdString)
 	setName.WriteString("Likes")
+	exist, err := rdb.Exists(c, setName.String()).Result()
+	if err != nil {
+		return false, err
+	}
+	if exist == 0 {
+		return false, nil
+	}
 	res := rdb.SIsMember(c, setName.String(), videoId)
 
 	return res.Val(), nil
+}
+
+func (p *RedisProxy) GetFavoriteVideoIds(userId int64) ([]string, error) {
+	if userId <= 0 {
+		return nil, errors.New("redis get favorite video error: userId <= 0")
+	}
+
+	userIdString := strconv.Itoa(int(userId))
+	var setName bytes.Buffer
+	setName.WriteString(userIdString)
+	setName.WriteString("Likes")
+
+	videoIds, err := rdb.SMembers(c, setName.String()).Result()
+	if err != nil {
+		return nil, err
+	}
+	return videoIds, nil
 }
 
 // 设置缓存中的关注状态 userId为操作者Id， followUserId为被关注者Id， isFollow为操作类型，true则为关注，false为取消关注
@@ -100,14 +128,40 @@ func (p *RedisProxy) SetFollow(userId int64, followUserId int64, isFollow bool) 
 // 从缓存中取出关注状态，若userId 关注了 followUserId，则返回true，否则返回false
 func (p *RedisProxy) GetFollowStatus(userId int64, followUserId int64) (bool, error) {
 	if userId <= 0 || followUserId <= 0 {
-		return false, errors.New("Redis GetFavoriteStatus Error: Id <= 0")
+		return false, errors.New("Redis GetFollowStatus Error: Id <= 0")
 	}
 
 	userIdString := strconv.Itoa(int(userId))
 	var setName bytes.Buffer
 	setName.WriteString(userIdString)
 	setName.WriteString("Follows")
+	exist, err := rdb.Exists(c, setName.String()).Result()
+	if err != nil {
+		return false, err
+	}
+	if exist == 0 {
+		return false, nil
+	}
+
 	res := rdb.SIsMember(c, setName.String(), followUserId)
 
 	return res.Val(), nil
+}
+
+// 从缓存中取出所有的被关注的人的id，
+func (p *RedisProxy) GetFollowedUserIds(userId int64) ([]string, error) {
+	if userId <= 0 {
+		return nil, errors.New("redis get followed userIds error: userId <= 0")
+	}
+
+	userIdString := strconv.Itoa(int(userId))
+	var setName bytes.Buffer
+	setName.WriteString(userIdString)
+	setName.WriteString("Follows")
+
+	followedUserIds, err := rdb.SMembers(c, setName.String()).Result()
+	if err != nil {
+		return nil, err
+	}
+	return followedUserIds, nil
 }

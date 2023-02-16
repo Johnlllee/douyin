@@ -62,12 +62,17 @@ type AddFavoriteResponse struct {
 	CommonResponse
 }
 
+type FavoriteListResponse struct {
+	CommonResponse
+	*videoSvc.FavoriteVideoList
+}
+
 type FollowListResponse struct {
 	CommonResponse
-	User_list *ActionSvc.UserInfoList `json:"user_list"`
+	*ActionSvc.UserInfoList
 }
 
 type FollowerListResponse struct {
 	CommonResponse
-	User_list *ActionSvc.UserInfoList `json:"user_list"`
+	*ActionSvc.UserInfoList
 }

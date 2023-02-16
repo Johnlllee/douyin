@@ -1,20 +1,23 @@
 package model
 
-import "time"
+import (
+	"gorm.io/gorm"
+	"time"
+)
 
 type Video struct {
-	Id            int64       `json:"id,omitempty"`
-	UserInfoId    int64       `json:"-"`
-	Author        UserInfo    `json:"author,omitempty" gorm:"-"` //这里应该是作者对视频的一对多的关系，而不是视频对作者，故gorm不能存他，但json需要返回它
-	PlayUrl       string      `json:"play_url,omitempty"`
-	CoverUrl      string      `json:"cover_url,omitempty"`
-	FavoriteCount int64       `json:"favorite_count,omitempty"`
-	CommentCount  int64       `json:"comment_count,omitempty"`
-	IsFavorite    bool        `json:"is_favorite,omitempty"`
-	Title         string      `json:"title,omitempty"`
-	Users         []*UserInfo `json:"-" gorm:"many2many:user_favor_videos;"`
-	CreatedAt     time.Time   `json:"-"`
-	UpdatedAt     time.Time   `json:"-"`
+	Id            int64    `json:"id,omitempty"`
+	UserInfoId    int64    `json:"-"`
+	Author        UserInfo `json:"author,omitempty" gorm:"-"` //这里应该是作者对视频的一对多的关系，而不是视频对作者，故gorm不能存他，但json需要返回它
+	PlayUrl       string   `json:"play_url,omitempty"`
+	CoverUrl      string   `json:"cover_url,omitempty"`
+	FavoriteCount int64    `json:"favorite_count,omitempty"`
+	CommentCount  int64    `json:"comment_count,omitempty"`
+	IsFavorite    bool     `json:"is_favorite,omitempty"`
+	Title         string   `json:"title,omitempty"`
+	//Users         []*UserInfo `json:"-" gorm:"many2many:user_favor_videos;"`
+	CreatedAt time.Time `json:"-"`
+	UpdatedAt time.Time `json:"-"`
 }
 
 func AddVideo(video *Video) error {
@@ -69,4 +72,33 @@ func QueryVideoListByLimitAndTime(limit int, latestTime time.Time, videoList *[]
 		Order("created_at ASC").Limit(limit).
 		Select([]string{"id", "user_info_id", "play_url", "cover_url", "favorite_count", "comment_count", "is_favorite", "title", "created_at", "updated_at"}).
 		Find(videoList).Error
+}
+
+func AddFavoriteCountByVideoId(videoId int64) error {
+	/*return DB.Transaction(func(tx *gorm.DB) error {
+		err := tx.Model(&Video{}).Where("id=?", videoId).Update("favorite_count", gorm.Expr("favorite_count+?", 1)).Error
+		if err != nil {
+			return err
+		}
+		return nil
+	})*/
+	return DB.Model(&Video{}).Where("id=?", videoId).Update("favorite_count", gorm.Expr("favorite_count+?", 1)).Error
+}
+
+func MinusFavoriteCountByVideoId(videoId int64) error {
+	/*return DB.Transaction(func(tx *gorm.DB) error {
+		err := tx.Model(&Video{}).Where("id=?", videoId).Update("favorite_count", gorm.Expr("favorite_count-?", 1)).Error
+		if err != nil {
+			return err
+		}
+		return nil
+	})*/
+	return DB.Model(&Video{}).Where("id=?", videoId).Update("favorite_count", gorm.Expr("favorite_count-?", 1)).Error
+}
+
+func QueryVideoListByVideoIds(videoIds []string, videoList *[]*Video) error {
+	if videoList == nil {
+		return ErrIvdPtr
+	}
+	return DB.Model(&Video{}).Where("id in (?)", videoIds).Find(videoList).Error
 }

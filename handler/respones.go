@@ -64,10 +64,10 @@ type AddFavoriteResponse struct {
 
 type FollowListResponse struct {
 	CommonResponse
-	*ActionSvc.UserInfoList
+	User_list *ActionSvc.UserInfoList `json:"user_list"`
 }
 
 type FollowerListResponse struct {
 	CommonResponse
-	*ActionSvc.UserInfoList
+	User_list *ActionSvc.UserInfoList `json:"user_list"`
 }

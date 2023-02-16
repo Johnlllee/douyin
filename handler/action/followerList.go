@@ -30,7 +30,7 @@ func FollowerListHandler(context *gin.Context) {
 		})
 		return
 	}
-	
+
 	list, err := ActionSvc.GetFollowerList(userIdToQuery)
 	if err != nil {
 		context.JSON(http.StatusOK, &handler.CommonResponse{
@@ -44,7 +44,7 @@ func FollowerListHandler(context *gin.Context) {
 		CommonResponse: handler.CommonResponse{
 			StatusCode: 0,
 		},
-		UserInfoList: list,
+		User_list: list,
 	})
 	return
 }

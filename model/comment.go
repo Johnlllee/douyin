@@ -12,6 +12,7 @@ type Comment struct {
 	User       UserInfo  `json:"user" gorm:"-"`
 	Content    string    `json:"content"`
 	CreatedAt  time.Time `json:"-"`
+	CreateDate string    `json:"create_date" gorm:"-"`
 }
 
 func QueryCommentByCommentId(id int64, comment *Comment) error {

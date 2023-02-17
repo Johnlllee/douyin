@@ -17,7 +17,10 @@ func GetCommentList(videoId int64) (*FeedCommentList, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	err = QueryUserByComment(&comments)
+	if err != nil {
+		return nil, err
+	}
 	//for i:=0; i<len(comments); i++ {
 	//	feed
 	//}
@@ -25,4 +28,16 @@ func GetCommentList(videoId int64) (*FeedCommentList, error) {
 	//[lzy] packData 不知道怎么吧comments-->Response,目前就用的comments
 
 	return &FeedCommentList{CommentList: comments}, nil
+}
+
+func QueryUserByComment(comments *[]*model.Comment) error {
+	n := len(*comments)
+	if comments == nil || n == 0 {
+		return ErrCommentListEmpty
+	}
+	for _, v := range *comments {
+		_ = model.QueryUserInfoByUserId(v.UserInfoId, &v.User)
+		v.CreateDate = v.CreatedAt.Format("1-2")
+	}
+	return nil
 }

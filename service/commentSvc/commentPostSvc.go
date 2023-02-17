@@ -11,8 +11,8 @@ const (
 )
 
 var (
-	ErrObjNotExist  = errors.New("[Svc]对象不存在")
-	ErrUserNotExist = errors.New("[Svc]用户不存在")
+	ErrObjNotExist      = errors.New("[Svc]对象不存在")
+	ErrCommentListEmpty = errors.New("[Svc]评论列表为空")
 )
 
 type Response struct {

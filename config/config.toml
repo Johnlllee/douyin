@@ -17,10 +17,6 @@ database = 0
 
 #记录当前服务器的ip和启动端口号，当前服务器的ip用于生成对应的视频链接地址
 [server]
-ip = "192.168.33.251"
+#ip = "10.68.127.227"
+ip = "192.168.1.28"
 port = 8080
-
-#用于保存资源的路径，以及用于截图工具的路径（截图工具放在lib目录
-[path]
-ffmpeg_path = "D:\\GOLandPRo\\douyin_pro\\byte_douyin_project\\lib\\ffmpeg.exe"
-static_source_path = "D:\\GOLandPRo\\douyin_pro\\byte_douyin_project\\static"
